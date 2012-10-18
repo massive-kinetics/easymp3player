@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="emp_app_theme">
+        <item name="android:background">@drawable/app_bgr</item>
+        
+    </style>
+
+    <style name="text_artist_big">
+        <item name="android:textColor">@color/emp_orange</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:shadowColor">@android:color/holo_orange_dark</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowDx">1</item>
+    </style>
+
+    <style name="text_small_block">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="dotted_small_block">
+        <item name="android:padding">2dp</item>
+        <item name="android:background">@drawable/row_right_value_box</item>
+    </style>
+
+</resources>
