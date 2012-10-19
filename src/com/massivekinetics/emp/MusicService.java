@@ -16,6 +16,8 @@
 
 package com.massivekinetics.emp;
 
+import java.io.IOException;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,8 +25,6 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -36,17 +36,14 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.massivekinetics.emp.concurrent.PrepareMusicRetrieverTask;
-import com.massivekinetics.emp.data.EMPMusicManager;
 import com.massivekinetics.emp.data.ProviderMusicManager;
 import com.massivekinetics.emp.data.entities.Track;
-
-import java.io.IOException;
-
+import com.massivekinetics.emp.gui.activities.FrontPage;
 import com.massivekinetics.emp.interfaces.MusicFocusable;
 import com.massivekinetics.emp.other.MediaButtonHelper;
 import com.massivekinetics.emp.other.MusicIntentReceiver;
@@ -67,7 +64,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
                 PrepareMusicRetrieverTask.MusicRetrieverPreparedListener {
 
     // The tag we put on debug messages
-    final static String TAG = "RandomMusicPlayer";
+    final static String TAG = "EasyMP3Player";
 
     // These are the Intent actions that we are prepared to handle. Notice that the fact these
     // constants exist in our class is a mere convenience: what really defines the actions our
@@ -517,9 +514,9 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     /** Updates the notification. */
     void updateNotification(String text) {
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), MainActivity.class),
+                new Intent(getApplicationContext(), FrontPage.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        mNotification.setLatestEventInfo(getApplicationContext(), "RandomMusicPlayer", text, pi);
+        mNotification.setLatestEventInfo(getApplicationContext(), "EasyMP3Player", text, pi);
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 
@@ -530,13 +527,13 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
      */
     void setUpAsForeground(String text) {
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), MainActivity.class),
+                new Intent(getApplicationContext(), FrontPage.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
         mNotification = new Notification();
         mNotification.tickerText = text;
         mNotification.icon = R.drawable.emp_icon;
         mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-        mNotification.setLatestEventInfo(getApplicationContext(), "RandomMusicPlayer",
+        mNotification.setLatestEventInfo(getApplicationContext(), "EasyMP3Player",
                 text, pi);
         startForeground(NOTIFICATION_ID, mNotification);
     }

@@ -1,14 +1,16 @@
 package com.massivekinetics.emp;
 
-import com.massivekinetics.emp.data.EMPMusicManager;
-import com.massivekinetics.emp.interfaces.AbstractMusicManager;
-import com.massivekinetics.emp.player.EMPMusicController;
-
 import android.app.Application;
 
-public class EMPApplication extends Application {
+import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask;
+import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask.OnMusicManagerReadyListener;
+import com.massivekinetics.emp.data.EMPMusicManager;
+import com.massivekinetics.emp.player.EMPMusicController;
+
+public class EMPApplication extends Application implements OnMusicManagerReadyListener {
 
 	public static EMPApplication context;
+	
 	private EMPMusicController musicController;
 	private EMPMusicManager musicManager;
 
@@ -27,6 +29,7 @@ public class EMPApplication extends Application {
 		context = this;
 		musicManager = new EMPMusicManager();
 		musicController = EMPMusicController.getInstance();
+		//new PrepareMusicManagerTask(this).execute();
 	}
 
 	public EMPMusicManager getMusicManager() {
@@ -35,6 +38,12 @@ public class EMPApplication extends Application {
 	
 	public EMPMusicController getMusicController() {
 		return musicController;
+	}
+
+	@Override
+	public void onMusicManagerReady() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

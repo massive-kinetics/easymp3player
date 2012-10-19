@@ -23,15 +23,15 @@ import com.massivekinetics.emp.data.entities.Playlist;
 import com.massivekinetics.emp.data.entities.Track;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
 import com.massivekinetics.emp.data.listeners.OnPlaylistsInfoChangedListener;
-import com.massivekinetics.emp.interfaces.AbstractMusicManager;
+import com.massivekinetics.emp.interfaces.MusicManager;
 import com.massivekinetics.emp.logger.Logger;
 
-public class EMPMusicManager extends AbstractMusicManager {
+public class EMPMusicManager implements MusicManager {
 
 	private final static String TAG = "EMPMusicManager";
 
 	private static Playlist allTracksPlaylist;
-	private static boolean isInitialized = false;
+	private boolean isInitialized = false;
 
 	// TODO: play with cache
 	private SparseArray<Playlist> playlistCache;
@@ -49,6 +49,10 @@ public class EMPMusicManager extends AbstractMusicManager {
 
 	public EMPMusicManager() {
 		databaseHelper = new DatabaseHelper(EMPApplication.context);
+	}
+
+	public boolean isInitialized() {
+		return isInitialized;
 	}
 
 	@Override
