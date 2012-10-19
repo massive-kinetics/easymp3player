@@ -1,15 +1,15 @@
 package com.massivekinetics.emp.gui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.massivekinetics.emp.R;
 
-public class FirstFragment extends Fragment {
+public class FirstFragment extends SherlockFragment {
 
 	static int c = 1;
 
@@ -24,7 +24,7 @@ public class FirstFragment extends Fragment {
 		View view = inflater
 				.inflate(R.layout.fragment_layout, container, false);
 		
-		((TextView)view.findViewById(R.id.textView1)).setText("Fragment" + c++);
+		((TextView)view.findViewById(R.id.textView1)).setText("Sherlock Fragment" + c++);
 		
 		return view;
 	}

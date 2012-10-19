@@ -1,9 +1,10 @@
 package com.massivekinetics.emp.gui.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
-public class FragmentTestActivity extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public class FragmentTestActivity extends SherlockFragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
