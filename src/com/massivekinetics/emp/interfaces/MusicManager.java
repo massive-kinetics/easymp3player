@@ -23,7 +23,7 @@ public interface MusicManager {
 
 	long deletePlaylist(long playlistId);
 
-	void deleteTrackFromPlaylist(long trackId, long playlistId);
+	void deleteTrackFromPlaylist(long playlistId, long[] trackId);
 
 	void addOnPlaylistsInfoChangedListener(
 			OnPlaylistsInfoChangedListener listener);

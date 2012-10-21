@@ -66,13 +66,17 @@ public class DBTestActivity extends Activity implements
 			tracks.add(playlist.get(i));
 		}
 
-		long playlistId = musicManager.createPlaylist("Playlist2", tracks);
-		playlistId = musicManager.createPlaylist("Playlist3", tracks);
-		playlistId = musicManager.createPlaylist("Playlist4", tracks);
-		playlistId = musicManager.createPlaylist("Playlist5", tracks);
-		playlistId = musicManager.createPlaylist("Playlist6", tracks);
+		long playlistId = 1;// musicManager.createPlaylist("Playlist2", tracks);
 
 		List p = musicManager.getPlaylists();
+		
+		long[] ids = new long[3];
+		for(int i=0;i<3;i++){
+			ids[i] = tracks.get(i).getId();
+		}
+		musicManager.deleteTrackFromPlaylist(playlistId, ids);
+		
+		p = musicManager.getPlaylists();
 
 		musicController.setCurrentPlaying(musicManager.getPlaylist(playlistId)
 				.getId(), 3);

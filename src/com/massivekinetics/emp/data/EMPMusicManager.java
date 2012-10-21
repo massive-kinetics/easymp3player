@@ -27,6 +27,7 @@ import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
 import com.massivekinetics.emp.data.listeners.OnPlaylistsInfoChangedListener;
 import com.massivekinetics.emp.interfaces.MusicManager;
 import com.massivekinetics.emp.logger.Logger;
+import com.massivekinetics.emp.utils.Error;
 
 public class EMPMusicManager implements MusicManager {
 
@@ -66,7 +67,7 @@ public class EMPMusicManager implements MusicManager {
 		fetchAllTracksFromSdCard();
 		fetchPlaylistCache();
 		isInitialized = true;
-		
+
 	}
 
 	private void fetchPlaylistCache() {
@@ -175,17 +176,25 @@ public class EMPMusicManager implements MusicManager {
 		if (result != null)
 			return result;
 
+		result = getPlaylistFromDB(playlistId);
+		playlistCache.put(playlistId, result);
+		return result;
+	}
+
+	private PlaylistDO getPlaylistFromDB(long playlistId) {
+		PlaylistDO result;
 		openDatabase();
 		Cursor cursor = database.query(PlaylistTable.TABLE_NAME,
 				PlaylistTable.COLUMNS, PlaylistTable.ID + "=?",
 				new String[] { "" + playlistId }, null, null, null);
 
 		try {
-			if (cursor == null || !cursor.moveToFirst())
+			if (cursor == null || !cursor.moveToFirst()) {
 				result = PlaylistDO.Null;
-			else {
+				return result;
+			} else {
 				result = getPlaylistFromCursor(cursor);
-				playlistCache.put(playlistId, result);
+
 			}
 
 			fetchPlaylistWithTracks(result);
@@ -203,9 +212,10 @@ public class EMPMusicManager implements MusicManager {
 		int createdColumn = cur.getColumnIndex(PlaylistTable.CREATED);
 		int modifiedColumn = cur.getColumnIndex(PlaylistTable.MODIFIED);
 
-		return new PlaylistDO(cur.getLong(idColumn), cur.getString(titleColumn),
-				Long.parseLong(cur.getString(createdColumn)),
-				Long.parseLong(cur.getString(modifiedColumn)));
+		return new PlaylistDO(cur.getLong(idColumn),
+				cur.getString(titleColumn), Long.parseLong(cur
+						.getString(createdColumn)), Long.parseLong(cur
+						.getString(modifiedColumn)));
 
 	}
 
@@ -222,7 +232,7 @@ public class EMPMusicManager implements MusicManager {
 		openDatabase();
 		// default value. If delete operation is successful then this method
 		// returns ID of deleted row
-		long id = OPERATION_ERROR;
+		long id = Error.PLAYLIST_NOT_DELETED;
 		try {
 			id = database.delete(PlaylistTable.TABLE_NAME, PlaylistTable.ID
 					+ "=?", new String[] { "" + playlistId });
@@ -230,22 +240,48 @@ public class EMPMusicManager implements MusicManager {
 			closeDatabase();
 		}
 
+		if (id > 0 && id != Error.PLAYLIST_NOT_DELETED)
+			playlistCache.remove(playlistId);
+
 		return id;
 	}
 
 	@Override
-	public void deleteTrackFromPlaylist(long trackId, long playlistId) {
+	public void deleteTrackFromPlaylist(long playlistId, long[] trackIds) {
 		openDatabase();
 
-		long id = OPERATION_ERROR;
+		StringBuilder removeIds = new StringBuilder();
+		boolean first = true;
+
+		for (long trackId : trackIds) {
+			if (!first) {
+				removeIds.append(",");
+			}
+			removeIds.append("'"+trackId+"'");
+			first = false;
+		}
+		String rawQuery = "delete from " + TrackToPlaylistTable.TABLE_NAME
+				+ " where " + TrackToPlaylistTable.PLAYLIST_ID + "="
+				+ playlistId + " and " + TrackToPlaylistTable.TRACK_ID
+				+ " in (" + removeIds.toString() + ")";
+
+		long operationId = Error.PLAYLIST_NOT_UPDATED;
 		try {
-			id = database.delete(TrackToPlaylistTable.TABLE_NAME,
-					TrackToPlaylistTable.PLAYLIST_ID + "=? and "
-							+ TrackToPlaylistTable.PLAYLIST_ID + "=?",
-					new String[] { "" + playlistId, "" + trackId });
+			Cursor cursor = database.rawQuery(rawQuery, null);
+
+			/*
+			 * operationId = database .delete(TrackToPlaylistTable.TABLE_NAME,
+			 * TrackToPlaylistTable.PLAYLIST_ID + "=? and " +
+			 * TrackToPlaylistTable.TRACK_ID + " in (?)", new String[] { "" +
+			 * playlistId, "" + removeIds.toString() });
+			 */
 		} finally {
 			closeDatabase();
 		}
+
+		playlistCache.remove(playlistId);
+		playlistCache.put(playlistId, getPlaylistFromDB(playlistId));
+
 	}
 
 	@Override
@@ -264,7 +300,7 @@ public class EMPMusicManager implements MusicManager {
 	@Override
 	public long createPlaylist(String title, List<TrackDO> tracks) {
 		ContentValues playlistValues = newPlaylist(title);
-		long newPlaylistId = -1;
+		long newPlaylistId;
 
 		openDatabase();
 		try {
@@ -278,15 +314,15 @@ public class EMPMusicManager implements MusicManager {
 						TrackToPlaylistTable.PLAYLIST_ID, track);
 			}
 			database.setTransactionSuccessful();
-			PlaylistDO createdPlaylist = new PlaylistDO(newPlaylistId, title, 
+			PlaylistDO createdPlaylist = new PlaylistDO(newPlaylistId, title,
 					tracks);
 			playlistCache.put(newPlaylistId, createdPlaylist);
 		} catch (Exception e) {
+			newPlaylistId = Error.PLAYLIST_NOT_CREATED;
 			Logger.e(TAG, e.getMessage(), e);
 		} finally {
 			database.endTransaction();
 			closeDatabase();
-
 		}
 
 		return newPlaylistId;
@@ -326,7 +362,7 @@ public class EMPMusicManager implements MusicManager {
 
 		Log.i(TAG, "Listing...");
 
-		allTracksPlaylist = new PlaylistDO(ALL_TRACKS, 
+		allTracksPlaylist = new PlaylistDO(ALL_TRACKS,
 				EMPApplication.context.getString(R.string.all_tracks));
 
 		// retrieve the indices of the columns where the ID, title, etc. of the
@@ -484,7 +520,8 @@ public class EMPMusicManager implements MusicManager {
 		return playlistValues;
 	}
 
-	private ContentValues[] fromTracklist(long playlistId, List<TrackDO> trackList) {
+	private ContentValues[] fromTracklist(long playlistId,
+			List<TrackDO> trackList) {
 		int size = trackList.size();
 		ContentValues[] trackToPlaylistValues = new ContentValues[size];
 
