@@ -5,16 +5,16 @@ import android.content.Intent;
 import com.massivekinetics.emp.EMPApplication;
 import com.massivekinetics.emp.MusicService;
 import com.massivekinetics.emp.data.EMPMusicManager;
-import com.massivekinetics.emp.data.entities.Playlist;
-import com.massivekinetics.emp.data.entities.Track;
-import com.massivekinetics.emp.interfaces.AbstractMusicController;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
+import com.massivekinetics.emp.interfaces.MusicController;
 
-public class EMPMusicController extends AbstractMusicController {
+public class EMPMusicController implements MusicController {
 	private EMPApplication context = EMPApplication.context;
 	private static EMPMusicController instance;
 	private EMPMusicManager musicManager;
-	private Playlist currentPlaylist;
-	private Track currentTrack;
+	private PlaylistDO currentPlaylist;
+	private TrackDO currentTrack;
 	
 	
 	private EMPMusicController(){
@@ -28,19 +28,19 @@ public class EMPMusicController extends AbstractMusicController {
 	}
 	
 	@Override
-	public void setCurrentPlaying(int playlistId, int position) {
+	public void setCurrentPlaying(long playlistId, int position) {
 		currentPlaylist = musicManager.getPlaylist(playlistId);
 		currentTrack = currentPlaylist.get(position);
 	}
 
 	@Override
-	public Playlist getCurrentPlaylist() {
+	public PlaylistDO getCurrentPlaylist() {
 		return currentPlaylist;
 	}
 
 	@Override
 	public void switchSong(int direction) {
-		Track track = currentPlaylist.getSong(currentTrack, direction);
+		TrackDO track = currentPlaylist.getSong(currentTrack, direction);
 		if(track == currentTrack)
 			return;
 		else{
@@ -71,7 +71,7 @@ public class EMPMusicController extends AbstractMusicController {
 	}
 
 	@Override
-	public Track getTrackToPlay() {
+	public TrackDO getTrackToPlay() {
 		return currentTrack;
 	}
 

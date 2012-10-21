@@ -26,7 +26,7 @@ public class FrontPage extends SherlockFragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedState) {
-		setTheme(R.style.Theme_Sherlock);
+		//setTheme(R.style.Theme_Sherlock);
 		super.onCreate(savedState);
 		setContentView(R.layout.fragment_tabs_pager);
 		initViews();

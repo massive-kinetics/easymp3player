@@ -24,6 +24,7 @@ public class ArtistsFragment extends SherlockListFragment implements OnMusicMana
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		musicManager = EMPApplication.context.getMusicManager();
+		//getListView().setSelector(resID);
 		fillListAdapter();		
 	}
 

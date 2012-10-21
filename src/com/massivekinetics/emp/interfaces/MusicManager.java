@@ -2,28 +2,28 @@ package com.massivekinetics.emp.interfaces;
 
 import java.util.List;
 
-import com.massivekinetics.emp.data.entities.Playlist;
-import com.massivekinetics.emp.data.entities.Track;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
 import com.massivekinetics.emp.data.listeners.OnPlaylistsInfoChangedListener;
 
 public interface MusicManager {
-	public static final int ALL_TRACKS = -1;
+	public static final long ALL_TRACKS = -1;
 	public static final int OPERATION_ERROR = -1110001;
 
 	void init();
 
-	Playlist getPlaylist(int playlistId);
+	PlaylistDO getPlaylist(long playlistId);
 
-	List<Playlist> getPlaylists();
+	List<PlaylistDO> getPlaylists();
 
-	void updatePlaylist(Playlist playlist);
+	void updatePlaylist(PlaylistDO playlist);
 
-	long createPlaylist(String title, List<Track> tracks);
+	long createPlaylist(String title, List<TrackDO> tracks);
 
-	long deletePlaylist(int playlistId);
+	long deletePlaylist(long playlistId);
 
-	void deleteTrackFromPlaylist(int trackId, int playlistId);
+	void deleteTrackFromPlaylist(long trackId, long playlistId);
 
 	void addOnPlaylistsInfoChangedListener(
 			OnPlaylistsInfoChangedListener listener);

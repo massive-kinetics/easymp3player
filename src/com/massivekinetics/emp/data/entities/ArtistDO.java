@@ -1,13 +1,13 @@
 package com.massivekinetics.emp.data.entities;
 
-public class ArtistDO {
+public class ArtistDO implements BaseDO {
 
-	private int id;
+	private long id;
 	private String name;
 	private int albumCount;
 	private int trackCount;
 
-	public ArtistDO(int artistId, String artistName, int artistAlbumCount,
+	public ArtistDO(long artistId, String artistName, int artistAlbumCount,
 			int artistTrackCount) {
 		id = artistId;
 		name = artistName;
@@ -15,7 +15,7 @@ public class ArtistDO {
 		trackCount = artistTrackCount;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

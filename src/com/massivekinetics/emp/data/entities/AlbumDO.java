@@ -1,17 +1,15 @@
 package com.massivekinetics.emp.data.entities;
 
-import java.nio.charset.Charset;
-
 import com.massivekinetics.emp.logger.Logger;
 
-public class AlbumDO {
+public class AlbumDO implements BaseDO {
 
-	private int id;
+	private long id;
 	private String title = "No title";
 	private String artistName = "NO ARTIST";
 	private int songCount;
 
-	public AlbumDO(int albumId, String albumTitle, String albumArtistName,
+	public AlbumDO(long albumId, String albumTitle, String albumArtistName,
 			int albumSongCount) {
 		this.id = albumId;
 		try {
@@ -27,7 +25,7 @@ public class AlbumDO {
 		this.songCount = albumSongCount;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

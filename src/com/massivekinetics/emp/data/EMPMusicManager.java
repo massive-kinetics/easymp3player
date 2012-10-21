@@ -1,7 +1,9 @@
 package com.massivekinetics.emp.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -19,8 +21,8 @@ import com.massivekinetics.emp.data.db.PlaylistTable;
 import com.massivekinetics.emp.data.db.TrackToPlaylistTable;
 import com.massivekinetics.emp.data.entities.AlbumDO;
 import com.massivekinetics.emp.data.entities.ArtistDO;
-import com.massivekinetics.emp.data.entities.Playlist;
-import com.massivekinetics.emp.data.entities.Track;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
 import com.massivekinetics.emp.data.listeners.OnPlaylistsInfoChangedListener;
 import com.massivekinetics.emp.interfaces.MusicManager;
@@ -30,11 +32,11 @@ public class EMPMusicManager implements MusicManager {
 
 	private final static String TAG = "EMPMusicManager";
 
-	private static Playlist allTracksPlaylist;
+	private static PlaylistDO allTracksPlaylist;
 	private boolean isInitialized = false;
 
 	// TODO: play with cache
-	private SparseArray<Playlist> playlistCache;
+	private Map<Long, PlaylistDO> playlistCache;
 	private SparseArray<OnPlaylistChangedListener> playlistChangedListeners;
 	private List<OnPlaylistsInfoChangedListener> playlistsInfoListeners;
 
@@ -57,13 +59,14 @@ public class EMPMusicManager implements MusicManager {
 
 	@Override
 	public void init() {
-		playlistCache = new SparseArray<Playlist>();
+		playlistCache = new HashMap<Long, PlaylistDO>();
 		playlistChangedListeners = new SparseArray<OnPlaylistChangedListener>();
 		playlistsInfoListeners = new ArrayList<OnPlaylistsInfoChangedListener>();
 		contentResolver = EMPApplication.context.getContentResolver();
 		fetchAllTracksFromSdCard();
 		fetchPlaylistCache();
 		isInitialized = true;
+		
 	}
 
 	private void fetchPlaylistCache() {
@@ -73,7 +76,7 @@ public class EMPMusicManager implements MusicManager {
 					PlaylistTable.COLUMNS, null, null, null, null, null);
 			if (cursor != null && cursor.moveToFirst()) {
 				do {
-					Playlist playlist = getPlaylistFromCursor(cursor);
+					PlaylistDO playlist = getPlaylistFromCursor(cursor);
 					fetchPlaylistWithTracks(playlist);
 					playlistCache.put(playlist.getId(), playlist);
 				} while (cursor.moveToNext());
@@ -85,7 +88,7 @@ public class EMPMusicManager implements MusicManager {
 		}
 	}
 
-	private void fetchPlaylistWithTracks(final Playlist playlist) {
+	private void fetchPlaylistWithTracks(final PlaylistDO playlist) {
 		openDatabase();
 		Cursor cursor = database.query(TrackToPlaylistTable.TABLE_NAME,
 				TrackToPlaylistTable.COLUMNS, TrackToPlaylistTable.PLAYLIST_ID
@@ -102,7 +105,7 @@ public class EMPMusicManager implements MusicManager {
 					ids[counter++] = cursor.getInt(idColumn);
 				} while (cursor.moveToNext());
 
-				List<Track> trackList = getTrackListFromIds(ids);
+				List<TrackDO> trackList = getTrackListFromIds(ids);
 				playlist.setTracks(trackList);
 			}
 		} finally {
@@ -110,8 +113,8 @@ public class EMPMusicManager implements MusicManager {
 		}
 	}
 
-	private List<Track> getTrackListFromIds(int[] ids) {
-		List<Track> trackList = new ArrayList<Track>();
+	private List<TrackDO> getTrackListFromIds(int[] ids) {
+		List<TrackDO> trackList = new ArrayList<TrackDO>();
 
 		int argcount = ids.length; // number of IN arguments
 		String[] args = new String[ids.length];
@@ -148,7 +151,7 @@ public class EMPMusicManager implements MusicManager {
 			int idColumn = cur.getColumnIndex(MediaStore.Audio.Media._ID);
 
 			do {
-				trackList.add(new Track(cur.getInt(idColumn), cur
+				trackList.add(new TrackDO(cur.getInt(idColumn), cur
 						.getString(artistColumn), cur.getString(titleColumn),
 						cur.getString(albumColumn), cur.getLong(albumIdColumn),
 						cur.getLong(durationColumn)));
@@ -160,7 +163,7 @@ public class EMPMusicManager implements MusicManager {
 	}
 
 	@Override
-	public Playlist getPlaylist(int playlistId) {
+	public PlaylistDO getPlaylist(long playlistId) {
 		if (!isInitialized)
 			throw new RuntimeException(TAG
 					+ " getPlaylist() : EMPMusicManager isn't initialized!");
@@ -168,7 +171,7 @@ public class EMPMusicManager implements MusicManager {
 		if (playlistId == ALL_TRACKS)
 			return allTracksPlaylist;
 
-		Playlist result = playlistCache.get(playlistId);
+		PlaylistDO result = playlistCache.get(playlistId);
 		if (result != null)
 			return result;
 
@@ -179,7 +182,7 @@ public class EMPMusicManager implements MusicManager {
 
 		try {
 			if (cursor == null || !cursor.moveToFirst())
-				result = Playlist.Null;
+				result = PlaylistDO.Null;
 			else {
 				result = getPlaylistFromCursor(cursor);
 				playlistCache.put(playlistId, result);
@@ -193,29 +196,29 @@ public class EMPMusicManager implements MusicManager {
 		return result;
 	}
 
-	private Playlist getPlaylistFromCursor(Cursor cur) {
+	private PlaylistDO getPlaylistFromCursor(Cursor cur) {
 
 		int idColumn = cur.getColumnIndex(PlaylistTable.ID);
 		int titleColumn = cur.getColumnIndex(PlaylistTable.TITLE);
 		int createdColumn = cur.getColumnIndex(PlaylistTable.CREATED);
 		int modifiedColumn = cur.getColumnIndex(PlaylistTable.MODIFIED);
 
-		return new Playlist(cur.getString(titleColumn), cur.getInt(idColumn),
+		return new PlaylistDO(cur.getLong(idColumn), cur.getString(titleColumn),
 				Long.parseLong(cur.getString(createdColumn)),
 				Long.parseLong(cur.getString(modifiedColumn)));
 
 	}
 
 	@Override
-	public List<Playlist> getPlaylists() {
-		List<Playlist> res = new ArrayList<Playlist>();
-		for (int i = 0; i < playlistCache.size(); i++)
-			res.add(playlistCache.valueAt(i));
+	public List<PlaylistDO> getPlaylists() {
+		List<PlaylistDO> res = new ArrayList<PlaylistDO>();
+		for (long key : playlistCache.keySet())
+			res.add(playlistCache.get(key));
 		return res;
 	}
 
 	@Override
-	public long deletePlaylist(int playlistId) {
+	public long deletePlaylist(long playlistId) {
 		openDatabase();
 		// default value. If delete operation is successful then this method
 		// returns ID of deleted row
@@ -231,7 +234,7 @@ public class EMPMusicManager implements MusicManager {
 	}
 
 	@Override
-	public void deleteTrackFromPlaylist(int trackId, int playlistId) {
+	public void deleteTrackFromPlaylist(long trackId, long playlistId) {
 		openDatabase();
 
 		long id = OPERATION_ERROR;
@@ -246,7 +249,7 @@ public class EMPMusicManager implements MusicManager {
 	}
 
 	@Override
-	public void updatePlaylist(Playlist playlist) {
+	public void updatePlaylist(PlaylistDO playlist) {
 		ContentValues playlistValues = fromPlaylist(playlist);
 		openDatabase();
 		try {
@@ -259,7 +262,7 @@ public class EMPMusicManager implements MusicManager {
 	}
 
 	@Override
-	public long createPlaylist(String title, List<Track> tracks) {
+	public long createPlaylist(String title, List<TrackDO> tracks) {
 		ContentValues playlistValues = newPlaylist(title);
 		long newPlaylistId = -1;
 
@@ -275,9 +278,9 @@ public class EMPMusicManager implements MusicManager {
 						TrackToPlaylistTable.PLAYLIST_ID, track);
 			}
 			database.setTransactionSuccessful();
-			Playlist createdPlaylist = new Playlist(title, (int) newPlaylistId,
+			PlaylistDO createdPlaylist = new PlaylistDO(newPlaylistId, title, 
 					tracks);
-			playlistCache.put((int) newPlaylistId, createdPlaylist);
+			playlistCache.put(newPlaylistId, createdPlaylist);
 		} catch (Exception e) {
 			Logger.e(TAG, e.getMessage(), e);
 		} finally {
@@ -310,22 +313,21 @@ public class EMPMusicManager implements MusicManager {
 		if (cur == null) {
 			// Query failed...
 			Logger.e(TAG, "Failed to retrieve music: cursor is null :-(");
-			allTracksPlaylist = Playlist.Null;
+			allTracksPlaylist = PlaylistDO.Null;
 			return;
 		}
 		if (!cur.moveToFirst()) {
 			// Nothing to query. There is no music on the device. How boring.
 			Logger.e(TAG,
 					"Failed to move cursor to first row (no query results).");
-			allTracksPlaylist = Playlist.Null;
+			allTracksPlaylist = PlaylistDO.Null;
 			return;
 		}
 
 		Log.i(TAG, "Listing...");
 
-		allTracksPlaylist = new Playlist(
-				EMPApplication.context.getString(R.string.all_tracks),
-				EMPMusicManager.ALL_TRACKS);
+		allTracksPlaylist = new PlaylistDO(ALL_TRACKS, 
+				EMPApplication.context.getString(R.string.all_tracks));
 
 		// retrieve the indices of the columns where the ID, title, etc. of the
 		// song are
@@ -348,7 +350,7 @@ public class EMPMusicManager implements MusicManager {
 					"ID: " + cur.getString(idColumn) + " Title: "
 							+ cur.getString(titleColumn));
 
-			allTracksPlaylist.add(new Track(cur.getLong(idColumn), cur
+			allTracksPlaylist.add(new TrackDO(cur.getLong(idColumn), cur
 					.getString(artistColumn), cur.getString(titleColumn), cur
 					.getString(albumColumn), cur.getLong(albumIdColumn), cur
 					.getLong(durationColumn)));
@@ -460,8 +462,8 @@ public class EMPMusicManager implements MusicManager {
 		return albumsList;
 	}
 
-	public Track getTrackById(long trackId) {
-		Track track = allTracksPlaylist.getById(trackId);
+	public TrackDO getTrackById(long trackId) {
+		TrackDO track = allTracksPlaylist.getById(trackId);
 		return track;
 	}
 
@@ -474,7 +476,7 @@ public class EMPMusicManager implements MusicManager {
 		return playlistValues;
 	}
 
-	private ContentValues fromPlaylist(Playlist playlist) {
+	private ContentValues fromPlaylist(PlaylistDO playlist) {
 		ContentValues playlistValues = new ContentValues();
 		playlistValues.put(PlaylistTable.TITLE, playlist.getTitle());
 		playlistValues.put(PlaylistTable.CREATED, playlist.getCreatedTime());
@@ -482,7 +484,7 @@ public class EMPMusicManager implements MusicManager {
 		return playlistValues;
 	}
 
-	private ContentValues[] fromTracklist(long playlistId, List<Track> trackList) {
+	private ContentValues[] fromTracklist(long playlistId, List<TrackDO> trackList) {
 		int size = trackList.size();
 		ContentValues[] trackToPlaylistValues = new ContentValues[size];
 

@@ -4,29 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.massivekinetics.emp.adapters.ArtistListAdapter;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask.OnMusicManagerReadyListener;
-import com.massivekinetics.emp.data.EMPMusicManager;
-import com.massivekinetics.emp.data.entities.ArtistDO;
-import com.massivekinetics.emp.data.entities.Playlist;
-import com.massivekinetics.emp.data.entities.Track;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
+import com.massivekinetics.emp.interfaces.MusicController;
+import com.massivekinetics.emp.interfaces.MusicManager;
 import com.massivekinetics.emp.player.EMPMusicController;
 
 public class DBTestActivity extends Activity implements
 		OnMusicManagerReadyListener {
 
 	boolean isPlaying = false;
-	
+
 	ListView list;
-	EMPMusicManager musicManager;
-	EMPMusicController musicController = EMPMusicController.getInstance();
+	MusicManager musicManager;
+	MusicController musicController = EMPMusicController.getInstance();
 	private Button btnPrev, btnPlay, btnStop, btnNext;
 
 	@Override
@@ -61,18 +59,25 @@ public class DBTestActivity extends Activity implements
 
 	private void doDbWork() {
 
-		/*
-		 * List<ArtistDO> albums = musicManager.getArtistsInfo();
-		 * ArtistListAdapter adapter = new ArtistListAdapter(albums);
-		 * list.setAdapter(adapter);
-		 */
+		PlaylistDO playlist = musicManager.getPlaylist(MusicManager.ALL_TRACKS);
 
-		musicController
-				.setCurrentPlaying(
-						musicManager.getPlaylist(EMPMusicManager.ALL_TRACKS)
-								.getId(), 0);
+		List<TrackDO> tracks = new ArrayList<TrackDO>();
+		for (int i = 2; i < 10; i++) {
+			tracks.add(playlist.get(i));
+		}
 
-		//startService(new Intent(MusicService.ACTION_PLAY));
+		long playlistId = musicManager.createPlaylist("Playlist2", tracks);
+		playlistId = musicManager.createPlaylist("Playlist3", tracks);
+		playlistId = musicManager.createPlaylist("Playlist4", tracks);
+		playlistId = musicManager.createPlaylist("Playlist5", tracks);
+		playlistId = musicManager.createPlaylist("Playlist6", tracks);
+
+		List p = musicManager.getPlaylists();
+
+		musicController.setCurrentPlaying(musicManager.getPlaylist(playlistId)
+				.getId(), 3);
+
+		// startService(new Intent(MusicService.ACTION_PLAY));
 
 		btnPrev.setOnClickListener(new View.OnClickListener() {
 			int i = 0;
@@ -95,7 +100,6 @@ public class DBTestActivity extends Activity implements
 		});
 
 		btnPlay.setOnClickListener(new View.OnClickListener() {
-			
 
 			@Override
 			public void onClick(View v) {
@@ -103,7 +107,7 @@ public class DBTestActivity extends Activity implements
 					musicController.play();
 				else
 					musicController.pause();
-				
+
 				isPlaying = !isPlaying;
 			}
 		});

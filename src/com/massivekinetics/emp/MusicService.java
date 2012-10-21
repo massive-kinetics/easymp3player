@@ -42,7 +42,7 @@ import android.widget.Toast;
 
 import com.massivekinetics.emp.concurrent.PrepareMusicRetrieverTask;
 import com.massivekinetics.emp.data.ProviderMusicManager;
-import com.massivekinetics.emp.data.entities.Track;
+import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.gui.activities.FrontPage;
 import com.massivekinetics.emp.interfaces.MusicFocusable;
 import com.massivekinetics.emp.other.MediaButtonHelper;
@@ -419,7 +419,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
             
                 mIsStreaming = false; // playing a locally available song
 
-               Track playingItem = musicController.getTrackToPlay();
+               TrackDO playingItem = musicController.getTrackToPlay();
                
                 if (playingItem == null) {
                     Toast.makeText(this,

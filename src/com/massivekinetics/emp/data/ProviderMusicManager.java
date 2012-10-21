@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.massivekinetics.emp.EMPApplication;
 import com.massivekinetics.emp.MusicService;
-import com.massivekinetics.emp.data.entities.Playlist;
-import com.massivekinetics.emp.data.entities.Track;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.interfaces.DataManager;
 import com.massivekinetics.emp.utils.FileUtils;
 
@@ -20,14 +20,14 @@ public class ProviderMusicManager implements DataManager {
 
 	private static ContentResolver contentResolver = EMPApplication.context
 			.getContentResolver();
-	private Playlist currentPlaylist;
+	private PlaylistDO currentPlaylist;
 
 	/**
 	 * Loads music data. This method may take long, so be sure to call it
 	 * asynchronously without blocking the main thread.
 	 */
 	public void prepare() {
-		currentPlaylist = new Playlist("", 0);
+		currentPlaylist = new PlaylistDO(0 , "");
 
 		Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		// Perform a query on the content resolver. The URI we're passing
@@ -72,7 +72,7 @@ public class ProviderMusicManager implements DataManager {
 					"ID: " + cur.getString(idColumn) + " Title: "
 							+ cur.getString(titleColumn));
 
-			currentPlaylist.add(new Track(cur.getLong(idColumn), cur
+			currentPlaylist.add(new TrackDO(cur.getLong(idColumn), cur
 					.getString(artistColumn), cur.getString(titleColumn), cur
 					.getString(albumColumn), cur.getLong(albumIdColumn), cur
 					.getLong(durationColumn)));
@@ -83,12 +83,12 @@ public class ProviderMusicManager implements DataManager {
 	}
 
 	public void nextTrack() {
-		Track tr = getRandomTrack();
+		TrackDO tr = getRandomTrack();
 		EMPApplication.context
 				.startService(new Intent(MusicService.ACTION_SKIP));
 	}
 
-	public Track getRandomTrack() {
+	public TrackDO getRandomTrack() {
 		return currentPlaylist.get((int) (Math.random() * currentPlaylist
 				.size()));
 	}
@@ -104,7 +104,7 @@ public class ProviderMusicManager implements DataManager {
 	}
 
 	@Override
-	public Playlist getPlayList(int playlistID) {
+	public PlaylistDO getPlayList(int playlistID) {
 		return currentPlaylist;
 	}
 

@@ -2,65 +2,24 @@ package com.massivekinetics.emp.adapters;
 
 import java.util.List;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.massivekinetics.emp.EMPApplication;
 import com.massivekinetics.emp.R;
 import com.massivekinetics.emp.data.entities.ArtistDO;
-import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
+import com.massivekinetics.emp.data.entities.BaseDO;
 
-public class ArtistListAdapter extends BaseAdapter implements
-		OnPlaylistChangedListener {
+public class ArtistListAdapter<T extends ArtistDO> extends EMPListAdapter<T> {
 
-	List<ArtistDO> items;
-
-	public ArtistListAdapter(List<ArtistDO> items) {
-		this.items = items;
+	public ArtistListAdapter(List<T> items) {
+		super(items, R.layout.listitem_artist);
 	}
-
+	
 	@Override
-	public int getCount() {
-		return items.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return items.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return ((ArtistDO) getItem(position)).getId();
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = LayoutInflater.from(EMPApplication.context);
-		View view = getView(inflater, convertView, position);
-		//view.setBackgroundColor(Color.BLACK);
-		return view;
-	}
-
-	private ViewGroup getView(LayoutInflater inflater, View convertView,
-			int position) {
-		ViewGroup view;
-		if (convertView != null && convertView instanceof ViewGroup) {
-			view = (ViewGroup) convertView;
-		} else {
-			view = (ViewGroup) inflater.inflate(R.layout.listitem_artist, null);
-		}
-
-		updateView(view, position);
-
-		return view;
-	}
-
-	private void updateView(ViewGroup view, int position) {
+	protected void updateView(ViewGroup view, int position) {
 		Object tag = view.getTag();
 		ArtistViewHolder viewHolder;
 		if (tag != null)
