@@ -66,7 +66,7 @@ public class DBTestActivity extends Activity implements
 			tracks.add(playlist.get(i));
 		}
 
-		long playlistId = 1;// musicManager.createPlaylist("Playlist2", tracks);
+		long playlistId = musicManager.createPlaylist("Playlist2", tracks);
 
 		List p = musicManager.getPlaylists();
 		
