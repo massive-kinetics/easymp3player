@@ -1,49 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="50dp"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="10dp" >
+    android:padding="5dp" >
 
     <LinearLayout
         android:id="@+id/trackInfoContainer"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true" android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/trackDurationContainer"
-        android:orientation="vertical" >
+        android:gravity="left|center_vertical"
+        android:orientation="vertical"
+        android:weightSum="3" >
 
         <TextView
             android:id="@+id/title"
             style="@style/text_white_block_big"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
             android:clickable="false"
-            android:gravity="fill_vertical" android:text="Track" />
+            android:fadingEdge="horizontal"
+            android:gravity="center_vertical"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxLength="20"
+            android:scrollHorizontally="true"
+            android:text="Track" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="7" >
 
             <TextView
                 android:id="@+id/artist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" style="@style/text_orange_small_block" android:text="Artist"/>
-            
+                style="@style/text_orange_small_block"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:ellipsize="marquee"
+                android:inputType="text"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:text="Artist" />
+
             <TextView
                 android:id="@+id/separator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text=" | "/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text=" | " />
 
             <TextView
                 android:id="@+id/album"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" style="@style/text_white_small_block" android:text="Album" />
+                style="@style/text_white_small_block"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:ellipsize="marquee"
+                android:inputType="text"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:text="Album" />
         </LinearLayout>
     </LinearLayout>
 
@@ -53,16 +83,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
         android:clickable="false"
-        android:layout_centerVertical="true" android:gravity="center_horizontal" >
+        android:gravity="center|center_horizontal" >
 
         <TextView
             android:id="@+id/duration"
             style="@style/text_white_small_block"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center|center_horizontal"
             android:clickable="false"
-            android:gravity="center|center_horizontal" android:text="3:33" />
+            android:text="3:33" />
     </LinearLayout>
 
 </RelativeLayout>
