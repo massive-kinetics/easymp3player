@@ -2,6 +2,7 @@ package com.massivekinetics.emp.adapters;
 
 import java.util.List;
 
+import android.text.TextUtils.TruncateAt;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -35,6 +36,9 @@ public class TracksListAdapter<T extends TrackDO> extends EMPListAdapter<T> {
 		view.setBackgroundResource(backgroundID);
 		TrackDO track = items.get(position);
 		viewHolder.title.setText(track.getTitle().toUpperCase());
+		viewHolder.title.setEllipsize(TruncateAt.MARQUEE);
+		viewHolder.title.setSingleLine(true);
+		
 		viewHolder.album.setText(track.getAlbum());
 		viewHolder.artist.setText(track.getArtist());
 		long duration = track.getDuration();

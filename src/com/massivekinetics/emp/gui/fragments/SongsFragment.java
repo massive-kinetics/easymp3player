@@ -10,21 +10,22 @@ import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.massivekinetics.emp.EMPApplication;
-import com.massivekinetics.emp.adapters.ArtistListAdapter;
+import com.massivekinetics.emp.adapters.TracksListAdapter;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask.OnMusicManagerReadyListener;
-import com.massivekinetics.emp.data.entities.ArtistDO;
+import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.interfaces.MusicManager;
 
-public class SongsFragment extends SherlockListFragment implements OnMusicManagerReadyListener {
-	List<ArtistDO> artistList;
+public class SongsFragment extends SherlockListFragment implements
+		OnMusicManagerReadyListener {
+	List<TrackDO> trackList;
 	MusicManager musicManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		musicManager = EMPApplication.context.getMusicManager();
-		fillListAdapter();		
+		fillListAdapter();
 	}
 
 	@Override
@@ -35,20 +36,19 @@ public class SongsFragment extends SherlockListFragment implements OnMusicManage
 
 	@Override
 	public void onMusicManagerReady() {
-		//setListAdapter(null);
+		// setListAdapter(null);
 		fillListAdapter();
 	}
 
 	private void fillListAdapter() {
 		if (musicManager.isInitialized()) {
-			artistList = EMPApplication.context.getMusicManager()
-					.getArtistsInfo();
-		}
-		else{
+			trackList = EMPApplication.context.getMusicManager()
+					.getPlaylist(MusicManager.ALL_TRACKS).getTracks();
+		} else {
 			new PrepareMusicManagerTask(this).execute();
-			artistList = new ArrayList<ArtistDO>();
+			trackList = new ArrayList<TrackDO>();
 		}
-		setListAdapter(new ArtistListAdapter(artistList));
+		setListAdapter(new TracksListAdapter<TrackDO>(trackList));
 	}
 
 }
