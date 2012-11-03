@@ -44,14 +44,14 @@
         </service>
 
         <activity android:name=".DBTestActivity" >
+        </activity>
+        <activity android:name=".gui.activities.FrontPage" >
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".gui.activities.FrontPage" >
-           
+            
         </activity>
     </application>
 

@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.massivekinetics.emp.EMPApplication;
-import com.massivekinetics.emp.adapters.ArtistListAdapter;
+import com.massivekinetics.emp.adapters.PlaylistListAdapter;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask.OnMusicManagerReadyListener;
-import com.massivekinetics.emp.data.entities.ArtistDO;
+import com.massivekinetics.emp.data.entities.PlaylistDO;
 import com.massivekinetics.emp.interfaces.MusicManager;
 
 public class PlaylistsFragment extends SherlockListFragment implements OnMusicManagerReadyListener {
-	List<ArtistDO> artistList;
+	List<PlaylistDO> playlists;
 	MusicManager musicManager;
 
 	@Override
@@ -35,20 +35,18 @@ public class PlaylistsFragment extends SherlockListFragment implements OnMusicMa
 
 	@Override
 	public void onMusicManagerReady() {
-		//setListAdapter(null);
 		fillListAdapter();
 	}
 
 	private void fillListAdapter() {
 		if (musicManager.isInitialized()) {
-			artistList = EMPApplication.context.getMusicManager()
-					.getArtistsInfo();
+			playlists = EMPApplication.context.getMusicManager().getPlaylists();
 		}
 		else{
 			new PrepareMusicManagerTask(this).execute();
-			artistList = new ArrayList<ArtistDO>();
+			playlists = new ArrayList<PlaylistDO>();
 		}
-		setListAdapter(new ArtistListAdapter(artistList));
+		setListAdapter(new PlaylistListAdapter(playlists));
 	}
 
 }
