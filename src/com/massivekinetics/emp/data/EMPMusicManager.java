@@ -74,7 +74,7 @@ public class EMPMusicManager implements MusicManager {
 		openDatabase();
 		try {
 			Cursor cursor = database.query(PlaylistTable.TABLE_NAME,
-					PlaylistTable.COLUMNS, null, null, null, null, null);
+					PlaylistTable.COLUMNS, null, null, null, null, PlaylistTable.CREATED + " asc");
 			if (cursor != null && cursor.moveToFirst()) {
 				do {
 					PlaylistDO playlist = getPlaylistFromCursor(cursor);

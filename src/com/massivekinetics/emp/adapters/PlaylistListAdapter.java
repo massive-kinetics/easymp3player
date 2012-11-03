@@ -2,17 +2,12 @@ package com.massivekinetics.emp.adapters;
 
 import java.util.List;
 
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.massivekinetics.emp.EMPApplication;
 import com.massivekinetics.emp.R;
-import com.massivekinetics.emp.data.entities.ArtistDO;
-import com.massivekinetics.emp.data.entities.BaseDO;
 import com.massivekinetics.emp.data.entities.PlaylistDO;
+import com.massivekinetics.emp.utils.StringUtils;
 
 public class PlaylistListAdapter<T extends PlaylistDO> extends
 		EMPListAdapter<T> {
@@ -41,7 +36,7 @@ public class PlaylistListAdapter<T extends PlaylistDO> extends
 		view.setBackgroundResource(backgroundID);
 		PlaylistDO playlist = items.get(position);
 		viewHolder.name.setText(playlist.getTitle().toUpperCase());
-		viewHolder.created.setText("Created: " + playlist.getCreatedTime());
+		viewHolder.created.setText("Created: " + StringUtils.getDateAsMediumString(playlist.getCreatedTime()));
 		viewHolder.trackCount.setText(""+playlist.size() + " tracks");
 		
 	}
@@ -50,7 +45,7 @@ public class PlaylistListAdapter<T extends PlaylistDO> extends
 	public void onPlaylistChanged() {
 
 	}
-
+	
 	private class PlaylistViewHolder {
 		final TextView name;
 		final TextView created;

@@ -14,8 +14,8 @@ import com.massivekinetics.emp.data.entities.ArtistDO;
 import com.massivekinetics.emp.data.entities.BaseDO;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
 
-public abstract class EMPListAdapter<T extends BaseDO> extends BaseAdapter implements
-		OnPlaylistChangedListener {
+public abstract class EMPListAdapter<T extends BaseDO> extends BaseAdapter
+		implements OnPlaylistChangedListener {
 
 	protected List<T> items;
 	protected int layoutID;
@@ -37,14 +37,13 @@ public abstract class EMPListAdapter<T extends BaseDO> extends BaseAdapter imple
 
 	@Override
 	public long getItemId(int position) {
-		return ((T)getItem(position)).getId();
+		return ((T) getItem(position)).getId();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = LayoutInflater.from(EMPApplication.context);
 		View view = getView(inflater, convertView, position);
-		// view.setBackgroundColor(Color.BLACK);
 		return view;
 	}
 
@@ -63,5 +62,5 @@ public abstract class EMPListAdapter<T extends BaseDO> extends BaseAdapter imple
 	}
 
 	protected abstract void updateView(ViewGroup view, int position);
-	
+
 }
