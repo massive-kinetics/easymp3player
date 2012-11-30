@@ -37,6 +37,7 @@ public class ArtistListAdapter<T extends ArtistDO> extends EMPListAdapter<T> {
 		view.setBackgroundResource(backgroundID);
 		ArtistDO artist = items.get(position);
 		viewHolder.tvArtist.setText(artist.getName().toUpperCase());
+		viewHolder.tvArtist.setSelected(true);
 		viewHolder.tvAlbumCount.setText(artist.getAlbumCount() + " albums");
 	}
 
