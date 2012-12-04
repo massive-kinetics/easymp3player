@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.massivekinetics.emp.EMPApplication;
@@ -46,7 +49,12 @@ public class PlaylistsFragment extends SherlockListFragment implements OnMusicMa
 			new PrepareMusicManagerTask(this).execute();
 			playlists = new ArrayList<PlaylistDO>();
 		}
+		
 		setListAdapter(new PlaylistListAdapter(playlists));
 	}
 
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Toast.makeText(getActivity(), "click", Toast.LENGTH_SHORT).show();
+	}
 }

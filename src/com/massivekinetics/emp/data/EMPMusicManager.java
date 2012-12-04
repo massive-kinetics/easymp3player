@@ -21,6 +21,7 @@ import com.massivekinetics.emp.data.db.PlaylistTable;
 import com.massivekinetics.emp.data.db.TrackToPlaylistTable;
 import com.massivekinetics.emp.data.entities.AlbumDO;
 import com.massivekinetics.emp.data.entities.ArtistDO;
+import com.massivekinetics.emp.data.entities.BaseDO;
 import com.massivekinetics.emp.data.entities.PlaylistDO;
 import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
@@ -41,6 +42,11 @@ public class EMPMusicManager implements MusicManager {
 	private SparseArray<OnPlaylistChangedListener> playlistChangedListeners;
 	private List<OnPlaylistsInfoChangedListener> playlistsInfoListeners;
 
+	// Caches
+	private SparseArray<BaseDO> trackCache;
+	private SparseArray<BaseDO> artistCache;
+	private SparseArray<BaseDO> albumCache;
+
 	private ContentResolver contentResolver;
 
 	private SQLiteDatabase database;
@@ -60,21 +66,30 @@ public class EMPMusicManager implements MusicManager {
 
 	@Override
 	public void init() {
-		playlistCache = new HashMap<Long, PlaylistDO>();
-		playlistChangedListeners = new SparseArray<OnPlaylistChangedListener>();
-		playlistsInfoListeners = new ArrayList<OnPlaylistsInfoChangedListener>();
-		contentResolver = EMPApplication.context.getContentResolver();
-		fetchAllTracksFromSdCard();
-		fetchPlaylistCache();
-		isInitialized = true;
+		synchronized (EMPMusicManager.class) {
+			if (!isInitialized) {
+				playlistCache = new HashMap<Long, PlaylistDO>();
+				playlistChangedListeners = new SparseArray<OnPlaylistChangedListener>();
+				playlistsInfoListeners = new ArrayList<OnPlaylistsInfoChangedListener>();
 
+				trackCache = new SparseArray<BaseDO>();
+				artistCache = new SparseArray<BaseDO>();
+				albumCache = new SparseArray<BaseDO>();
+
+				contentResolver = EMPApplication.context.getContentResolver();
+				fetchAllTracksFromSdCard();
+				fetchPlaylistCache();
+				isInitialized = true;
+			}
+		}
 	}
 
 	private void fetchPlaylistCache() {
 		openDatabase();
 		try {
 			Cursor cursor = database.query(PlaylistTable.TABLE_NAME,
-					PlaylistTable.COLUMNS, null, null, null, null, PlaylistTable.CREATED + " asc");
+					PlaylistTable.COLUMNS, null, null, null, null,
+					PlaylistTable.CREATED + " asc");
 			if (cursor != null && cursor.moveToFirst()) {
 				do {
 					PlaylistDO playlist = getPlaylistFromCursor(cursor);
@@ -257,7 +272,7 @@ public class EMPMusicManager implements MusicManager {
 			if (!first) {
 				removeIds.append(",");
 			}
-			removeIds.append("'"+trackId+"'");
+			removeIds.append("'" + trackId + "'");
 			first = false;
 		}
 		String rawQuery = "delete from " + TrackToPlaylistTable.TABLE_NAME
@@ -394,6 +409,41 @@ public class EMPMusicManager implements MusicManager {
 		} while (cur.moveToNext());
 
 		Log.i(TAG, "Done querying media. EMPMusicManager is ready.");
+	}
+
+	@Override
+	public Cursor getTracks() {
+		return contentResolver.query(MEDIA_URI, null,
+				MediaStore.Audio.Media.IS_MUSIC + " = 1", null,
+				MediaStore.Audio.Media.TITLE_KEY);
+	}
+	
+	public Cursor getTrack(long trackId) {
+		return contentResolver.query(MEDIA_URI, null, 
+				"_id = ? and is_music = 1", new String[]{""+trackId},
+				null);
+	}
+
+	@Override
+	public Cursor getArtists() {
+		String[] cols = { MediaStore.Audio.Artists._ID,
+				MediaStore.Audio.Artists.ARTIST,
+				MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+				MediaStore.Audio.Artists.NUMBER_OF_TRACKS };
+
+		return contentResolver.query(ARTISTS_URI, cols, null, null,
+				MediaStore.Audio.Artists.ARTIST_KEY);
+	}
+
+	@Override
+	public Cursor getAlbums() {
+		String[] cols = { MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM,
+				MediaStore.Audio.Albums.ALBUM_ART,
+				MediaStore.Audio.Media.ARTIST, 
+				MediaStore.Audio.Albums.NUMBER_OF_SONGS };
+
+		return contentResolver.query(ALBUMS_URI, cols, null, null,
+				MediaStore.Audio.Albums.ALBUM_KEY);
 	}
 
 	public List<ArtistDO> getArtistsInfo() {

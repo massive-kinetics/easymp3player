@@ -67,12 +67,15 @@ public class DBTestActivity extends Activity implements
 		}
 
 		long playlistId = musicManager.createPlaylist("Playlist2", tracks);
-		for(int i=0;i<900000000;i++);
-		 playlistId = musicManager.createPlaylist("Playlist5", tracks);
-		 for(int i=0;i<900000000;i++); 
+		
+		for(int i=0;i<10;i++)
+		playlistId = musicManager.createPlaylist("Playlist " + i, tracks);
+		
+		
+		 /*for(int i=0;i<900000000;i++); 
 		 playlistId = musicManager.createPlaylist("Playlist6", tracks);
 		 for(int i=0;i<900000000;i++); 
-		 playlistId = musicManager.createPlaylist("Playlist8", tracks);
+		 playlistId = musicManager.createPlaylist("Playlist8", tracks);*/
 
 		/*List p = musicManager.getPlaylists();
 		

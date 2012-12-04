@@ -1,8 +1,13 @@
 package com.massivekinetics.emp;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask;
 import com.massivekinetics.emp.concurrent.PrepareMusicManagerTask.OnMusicManagerReadyListener;
 import com.massivekinetics.emp.data.EMPMusicManager;
 import com.massivekinetics.emp.player.EMPMusicController;
@@ -30,6 +35,19 @@ public class EMPApplication extends Application implements OnMusicManagerReadyLi
 		musicManager = new EMPMusicManager();
 		musicController = EMPMusicController.getInstance();
 		//new PrepareMusicManagerTask(this).execute();
+		
+		registerMediaContentObserver();
+		
+	}
+
+	private void registerMediaContentObserver() {
+		registerReceiver(new BroadcastReceiver() {
+		    @Override
+		    public void onReceive(Context context, Intent intent) {
+		      String newFileURL = intent.getDataString();
+		      Log.e("DELETED", newFileURL);
+		    }    
+		  }, new IntentFilter(Intent.ACTION_MEDIA_REMOVED/*ACTION_MEDIA_SCANNER_SCAN_FILE*/));
 	}
 
 	public EMPMusicManager getMusicManager() {

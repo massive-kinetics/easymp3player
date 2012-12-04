@@ -2,6 +2,8 @@ package com.massivekinetics.emp.interfaces;
 
 import java.util.List;
 
+import android.database.Cursor;
+
 import com.massivekinetics.emp.data.entities.PlaylistDO;
 import com.massivekinetics.emp.data.entities.TrackDO;
 import com.massivekinetics.emp.data.listeners.OnPlaylistChangedListener;
@@ -14,6 +16,10 @@ public interface MusicManager {
 	void init();
 
 	PlaylistDO getPlaylist(long playlistId);
+	
+	Cursor getTracks();
+	Cursor getArtists();
+	Cursor getAlbums();
 
 	List<PlaylistDO> getPlaylists();
 

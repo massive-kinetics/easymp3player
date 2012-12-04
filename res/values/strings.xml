@@ -6,5 +6,6 @@
     <string name="title_activity_main">EasyMP3Player</string>
     
      <string name="all_tracks">All tracks</string>
+     <string name="indexes">ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЬЩЬЭЮЯ</string>
 
 </resources>

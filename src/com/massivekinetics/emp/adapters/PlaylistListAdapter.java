@@ -34,6 +34,9 @@ public class PlaylistListAdapter<T extends PlaylistDO> extends
 				: R.drawable.row_dark;
 
 		view.setBackgroundResource(backgroundID);
+		
+		view.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+		
 		PlaylistDO playlist = items.get(position);
 		viewHolder.name.setText(playlist.getTitle().toUpperCase());
 		viewHolder.created.setText("Created: " + StringUtils.getDateAsMediumString(playlist.getCreatedTime()));
