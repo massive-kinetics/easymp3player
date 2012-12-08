@@ -27,10 +27,16 @@ public class EMPMusicController implements MusicController {
 		return instance;
 	}
 	
-	@Override
+	/*@Override
 	public void setCurrentPlaying(long playlistId, int position) {
 		currentPlaylist = musicManager.getPlaylist(playlistId);
 		currentTrack = currentPlaylist.get(position);
+	}*/
+	
+	@Override
+	public void setCurrentPlaying(long playlistId, long trackId) {
+		currentPlaylist = musicManager.getPlaylist(playlistId);
+		currentTrack = musicManager.getTrack(trackId);
 	}
 
 	@Override

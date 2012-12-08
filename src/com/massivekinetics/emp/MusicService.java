@@ -256,7 +256,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
 
         // actually play the song
 
-        if (mState == State.Stopped) {
+        if (mState == State.Stopped || mState == State.Playing) {
             // If we're stopped, just go ahead to the next song and start playing
             playNextSong();
         }
@@ -419,7 +419,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
             
                 mIsStreaming = false; // playing a locally available song
 
-               TrackDO playingItem = musicController.getTrackToPlay();
+               TrackDO playingItem = musicController.getTrackToPlay(); 
                
                 if (playingItem == null) {
                     Toast.makeText(this,

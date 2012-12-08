@@ -380,6 +380,17 @@ public class EMPMusicManager implements MusicManager {
 		allTracksPlaylist = new PlaylistDO(ALL_TRACKS,
 				EMPApplication.context.getString(R.string.all_tracks));
 
+		// add each song to mItems
+		do {
+
+			allTracksPlaylist.add(getTrackFromCursor(cur));
+
+		} while (cur.moveToNext());
+
+		Log.i(TAG, "Done querying media. EMPMusicManager is ready.");
+	}
+
+	public TrackDO getTrackFromCursor(Cursor cur) {
 		// retrieve the indices of the columns where the ID, title, etc. of the
 		// song are
 		int artistColumn = cur.getColumnIndex(MediaStore.Audio.Media.ARTIST);
@@ -391,24 +402,9 @@ public class EMPMusicManager implements MusicManager {
 		int durationColumn = cur
 				.getColumnIndex(MediaStore.Audio.Media.DURATION);
 		int idColumn = cur.getColumnIndex(MediaStore.Audio.Media._ID);
-
-		Log.i(TAG, "Title column index: " + String.valueOf(titleColumn));
-		Log.i(TAG, "ID column index: " + String.valueOf(titleColumn));
-
-		// add each song to mItems
-		do {
-			Log.i(TAG,
-					"ID: " + cur.getString(idColumn) + " Title: "
-							+ cur.getString(titleColumn));
-
-			allTracksPlaylist.add(new TrackDO(cur.getLong(idColumn), cur
-					.getString(artistColumn), cur.getString(titleColumn), cur
-					.getString(albumColumn), cur.getLong(albumIdColumn), cur
-					.getLong(durationColumn)));
-
-		} while (cur.moveToNext());
-
-		Log.i(TAG, "Done querying media. EMPMusicManager is ready.");
+		return new TrackDO(cur.getLong(idColumn), cur.getString(artistColumn),
+				cur.getString(titleColumn), cur.getString(albumColumn),
+				cur.getLong(albumIdColumn), cur.getLong(durationColumn));
 	}
 
 	@Override
@@ -417,11 +413,18 @@ public class EMPMusicManager implements MusicManager {
 				MediaStore.Audio.Media.IS_MUSIC + " = 1", null,
 				MediaStore.Audio.Media.TITLE_KEY);
 	}
+
+	public Cursor getTrackCursor(long trackId) {
+		Cursor cursor =  contentResolver
+				.query(MEDIA_URI, null, "_id = ? and is_music = 1",
+						new String[] { "" + trackId }, null);
+		
+		cursor.moveToFirst();
+		return cursor;
+	}
 	
-	public Cursor getTrack(long trackId) {
-		return contentResolver.query(MEDIA_URI, null, 
-				"_id = ? and is_music = 1", new String[]{""+trackId},
-				null);
+	public TrackDO getTrack(long trackId) {
+		return getTrackFromCursor(getTrackCursor(trackId));
 	}
 
 	@Override
@@ -437,9 +440,10 @@ public class EMPMusicManager implements MusicManager {
 
 	@Override
 	public Cursor getAlbums() {
-		String[] cols = { MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM,
+		String[] cols = { MediaStore.Audio.Albums._ID,
+				MediaStore.Audio.Albums.ALBUM,
 				MediaStore.Audio.Albums.ALBUM_ART,
-				MediaStore.Audio.Media.ARTIST, 
+				MediaStore.Audio.Media.ARTIST,
 				MediaStore.Audio.Albums.NUMBER_OF_SONGS };
 
 		return contentResolver.query(ALBUMS_URI, cols, null, null,

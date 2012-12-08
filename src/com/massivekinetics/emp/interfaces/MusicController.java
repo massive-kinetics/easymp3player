@@ -7,8 +7,9 @@ public interface MusicController {
 	int DIRECTION_FORWARD = 10000001;
 	int DIRECTION_BACKWARD = 10000002;
 
-	void setCurrentPlaying(long playlistId, int position);
-
+	//void setCurrentPlaying(long playlistId, int position);
+	void setCurrentPlaying(long playlistId, long trackId);
+	
 	PlaylistDO getCurrentPlaylist();
 	
 	TrackDO getTrackToPlay();

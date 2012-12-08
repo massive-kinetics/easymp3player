@@ -44,11 +44,17 @@ public class TrackAdapter extends IndexedAdapter {
 		TrackDO track = getDataObject(position);
 
 		viewHolder.title.setText(track.getTitle().toUpperCase());
-		viewHolder.title.setEllipsize(TruncateAt.MARQUEE);
-		viewHolder.title.setSingleLine(true);
+		viewHolder.title.setSelected(true);
+		viewHolder.title.setEnabled(false);
 
 		viewHolder.album.setText(track.getAlbum());
+		viewHolder.album.setSelected(true);
+		viewHolder.album.setEnabled(false);
+
 		viewHolder.artist.setText(track.getArtist());
+		viewHolder.artist.setSelected(true);
+		viewHolder.artist.setEnabled(false);
+
 		long duration = track.getDuration();
 		viewHolder.duration.setText(String.format("%02d:%02d",
 				(duration % 3600) / 60, (duration % 60)));
@@ -57,7 +63,7 @@ public class TrackAdapter extends IndexedAdapter {
 	@Override
 	protected TrackDO getDataObject(int position) {
 		TrackDO trackDO = (TrackDO) cache.get(position);
-		
+
 		if (trackDO == null || isNeededUpdate) {
 
 			Cursor cursor = (Cursor) getItem(position);
@@ -83,7 +89,7 @@ public class TrackAdapter extends IndexedAdapter {
 					cursor.getLong(durationColumn));
 			cache.put(position, trackDO);
 		}
-		
+
 		return trackDO;
 
 	}
