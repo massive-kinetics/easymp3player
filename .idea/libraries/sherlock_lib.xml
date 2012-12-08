@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sherlock_lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/sherlock_lib/bin/sherlock_lib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
