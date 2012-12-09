@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp" >
+
+    <RelativeLayout
+        android:id="@+id/toggles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ToggleButton
+            android:id="@+id/toggleRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/repeat_selector"
+            android:drawablePadding="5dp"
+            android:textColor="@drawable/grey_text_selector"
+            android:textOff="REPEAT ALL"
+            android:textOn="REPEAT ALL"
+            android:textStyle="bold" >
+        </ToggleButton>
+
+        <ToggleButton
+            android:id="@+id/toggleShuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/shuffle_selector"
+            android:drawablePadding="5dp"
+            android:textColor="@drawable/grey_text_selector"
+            android:textOff="SHUFFLE"
+            android:textOn="SHUFFLE"
+            android:textStyle="bold" >
+        </ToggleButton>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/text_white_block_big"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:clickable="false"
+        android:ellipsize="marquee"
+        android:fadingEdgeLength="10dp"
+        android:gravity="fill_vertical"
+        android:marqueeRepeatLimit="0"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="MADONNA MY LOVE IS REVOLVER SUPER JUSTIN MIX" />
+
+</LinearLayout>

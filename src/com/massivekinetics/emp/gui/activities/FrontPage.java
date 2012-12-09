@@ -15,6 +15,7 @@ import com.massivekinetics.emp.R;
 import com.massivekinetics.emp.adapters.TabsAdapter;
 import com.massivekinetics.emp.gui.fragments.AlbumsFragment;
 import com.massivekinetics.emp.gui.fragments.ArtistsFragment;
+import com.massivekinetics.emp.gui.fragments.PlayerFragment;
 import com.massivekinetics.emp.gui.fragments.PlaylistsFragment;
 import com.massivekinetics.emp.gui.fragments.SongsFragment;
 
@@ -26,7 +27,7 @@ public class FrontPage extends SherlockFragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedState) {
-		//setTheme(R.style.Theme_Sherlock);
+		// setTheme(R.style.Theme_Sherlock);
 		super.onCreate(savedState);
 		setContentView(R.layout.fragment_tabs_pager);
 		initViews();
@@ -35,10 +36,17 @@ public class FrontPage extends SherlockFragmentActivity {
 	private void initViews() {
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		List<Fragment> fragmentList = new ArrayList<Fragment>();
-		fragmentList.add(Fragment.instantiate(this, PlaylistsFragment.class.getName()));
-		fragmentList.add(Fragment.instantiate(this, SongsFragment.class.getName()));
-		fragmentList.add(Fragment.instantiate(this, AlbumsFragment.class.getName()));
-		fragmentList.add(Fragment.instantiate(this, ArtistsFragment.class.getName()));
+		fragmentList.add(Fragment.instantiate(this,
+				PlaylistsFragment.class.getName()));
+		fragmentList.add(Fragment.instantiate(this,
+				SongsFragment.class.getName()));
+		fragmentList.add(Fragment.instantiate(this,
+				AlbumsFragment.class.getName()));
+		fragmentList.add(Fragment.instantiate(this,
+				ArtistsFragment.class.getName()));
+		
+		fragmentList.add(Fragment.instantiate(this,
+				PlayerFragment.class.getName()));
 
 		tabsAdapter = new TabsAdapter(getSupportFragmentManager(), fragmentList);
 		viewPager.setAdapter(tabsAdapter);
@@ -93,6 +101,8 @@ public class FrontPage extends SherlockFragmentActivity {
 		actionBar.addTab(actionBar.newTab().setText("Albums")
 				.setTabListener(tabListener));
 		actionBar.addTab(actionBar.newTab().setText("Artists")
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText("Player")
 				.setTabListener(tabListener));
 	}
 

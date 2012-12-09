@@ -58,7 +58,6 @@ public class SongsFragment extends SherlockListFragment implements
 			cursor = GeneralUtils.emptyCursor;
 			setListAdapter(new TrackAdapter(cursor));
 		}
-		// setListAdapter(new TracksListAdapter<TrackDO>(trackList));
 	}
 
 	@Override

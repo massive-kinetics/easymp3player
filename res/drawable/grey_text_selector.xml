@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- http://stackoverflow.com/questions/7096599/how-to-change-the-text-color-of-an-android-tooglebutton-on-state-change -->
+    <item android:state_checked="true" android:color="@color/gray_light"/>
+    <item android:state_checked="false" android:color="@color/gray_dark"/>
+
+</selector>
