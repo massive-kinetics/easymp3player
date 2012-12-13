@@ -54,4 +54,19 @@
         android:singleLine="true"
         android:text="MADONNA MY LOVE IS REVOLVER SUPER JUSTIN MIX" />
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cover" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="fill_parent"
+        android:layout_height="7dp"
+        android:background="@drawable/player_progressbar_bgr"
+        android:max="100"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"
+        android:thumb="@drawable/player_progressbar_grey_fill" />
+
 </LinearLayout>
